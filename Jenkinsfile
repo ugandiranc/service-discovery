@@ -15,10 +15,10 @@ pipeline {
 	  }
 	  agent any
 	  stages {
-
 		stage('Get Details'){
 			steps{
 				getDetails()
 			}
 		}
 	}
+}
