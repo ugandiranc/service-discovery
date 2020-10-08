@@ -15,10 +15,38 @@ pipeline {
 	  }
 	  agent any
 	  stages {
+
 		stage('Get Details'){
 			steps{
 				getDetails()
 			}
 		}
-	}
+	
+		stage("CHECKOUT"){
+			steps{
+				checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [],
+				submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/ugandiranc/service-discovery.git']]])		
+			}
+		}
+		
+		
+        stage('build'){
+			steps{
+              sh 'mvn clean compile'
+			}
+        }
+        stage('package'){
+			steps{
+                sh 'mvn package'			
+			}
+        }
+
+		stage('Building image') {
+		  steps{
+			script {
+			  docker.build registry + ":1"
+			}
+		  }
+		}
+	  }		
 }
