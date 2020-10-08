@@ -8,10 +8,17 @@ def getDetails(){
 
 }
 
-node{
-		 stage('Get Details'){
-               getDetails()
-         }
+pipeline {
+	  environment {
+	    registry = "ugandiranc/ugandiran"
+	    registryCredential = 'dockerhub'
+	  }
+	  agent any
+	  stages {
+
+		stage('Get Details'){
+		   getDetails()
+		}
 	
 		stage("CHECKOUT"){
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/ugandiranc/service-discovery.git']]])		}
@@ -23,8 +30,15 @@ node{
                 sh 'mvn package'
         }
 
-        stage('Docker Build'){
+       /* stage('Docker Build'){
             DOCKER_IMAGE = docker.build("my-image:service-discover")
-        }
-		
+        }*/
+		stage('Building image') {
+		  steps{
+			script {
+			  docker.build registry + ":1"
+			}
+		  }
+		}
+	  }		
 }
