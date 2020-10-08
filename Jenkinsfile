@@ -43,7 +43,7 @@ pipeline {
 		stage('Building image') {
 		  steps{
 			script {
-			  docker.build registry + ":1"
+			 DOCKER_IMAGE = docker.build registry + ":1"
 			}
 		  }
 		}
@@ -52,7 +52,7 @@ pipeline {
 		  steps{
 			script {
 			  docker.withRegistry( '', registryCredential ) {
-				dockerImage.push()
+				DOCKER_IMAGE.push()
 			  }
 			}
 		  }
